@@ -1,0 +1,174 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>POZOLE</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,30,60);
+   scene.add(light1);
+   function PozoleDelBueno({x, y, z}) {
+    // Tazón
+    var geoTazon = new THREE.CylinderGeometry(3.7, 3, 2, 32);
+    var matTazon = new THREE.MeshLambertMaterial({ color: 0xFFFFFF }); 
+    var meshTazon = new THREE.Mesh(geoTazon, matTazon);
+    meshTazon.position.set(0, 0, 0);
+
+    // Caldo
+    var geoCaldo = new THREE.CylinderGeometry(3.2, 3, 1.1, 32);
+    var matCaldo = new THREE.MeshLambertMaterial({ color: 0xB51616 }); 
+    var meshCaldo = new THREE.Mesh(geoCaldo, matCaldo);
+    meshCaldo.position.set(0, 0.5, 0);
+
+    // Granos de maíz
+    var geoMaiz = new THREE.SphereGeometry(0.2, 40, 70);
+    var matMaiz = new THREE.MeshLambertMaterial({ color: 0xffffcc }); // Amarillo claro
+
+    var maiz1 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz1.position.set(1, 1, 0.5);
+
+    var maiz2 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz2.position.set(-1, 1.1, -0.7);
+
+    var maiz3 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz3.position.set(0.5, 1.1, -1);
+
+     var maiz4 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz4.position.set(0.5, 1, 0.);
+
+ var maiz5 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz5.position.set(0.5, 1., -1.7);
+
+    var maiz6 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz6.position.set(0.5, 1,- 2.2);
+
+    var maiz7 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz7.position.set(-1, 1.1, -0.3);
+
+    var maiz8 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz8.position.set(0.5, 1.1, -1);
+
+     var maiz9 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz9.position.set(0.5, 1, 2.6)
+
+ var maiz10 = new THREE.Mesh(geoMaiz, matMaiz);
+    maiz10.position.set(0.5, 1, -2.5);
+
+   
+    // Lechuga
+    var geoLechuga = new THREE.SphereGeometry(0.15, 12, 12);
+    var matLechuga = new THREE.MeshLambertMaterial({ color: 0x66bb6a }); // Verde
+
+    var lechuga1 = new THREE.Mesh(geoLechuga, matLechuga);
+    lechuga1.position.set(0.2, 1, 0.6);
+
+    var lechuga2 = new THREE.Mesh(geoLechuga, matLechuga);
+    lechuga2.position.set(-0.4, 1, -0.3);
+
+    // Agrupar todo
+    var pozoleGroup = new THREE.Group();
+    pozoleGroup.add(meshTazon);
+    pozoleGroup.add(meshCaldo);
+    pozoleGroup.add(maiz1);
+    pozoleGroup.add(maiz2);
+    pozoleGroup.add(maiz3);
+    pozoleGroup.add(maiz4);
+    pozoleGroup.add(maiz5);
+    pozoleGroup.add(maiz6);
+    pozoleGroup.add(maiz7);
+    pozoleGroup.add(maiz8);
+    pozoleGroup.add(maiz9);
+    pozoleGroup.add(maiz10);
+    
+    pozoleGroup.add(lechuga1);
+    pozoleGroup.add(lechuga2);
+
+    pozoleGroup.position.set(x, y, z);
+
+    return pozoleGroup;
+}
+
+// Importar escena
+var miPozole = PozoleDelBueno({ x: 0, y: 0, z: 0 });
+scene.add(miPozole);
+
+        
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

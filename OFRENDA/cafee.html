@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Taza de café </title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #f2d7b6; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./js/three.module.js",
+      "three/OrbitControls": "./js/OrbitControls.js"
+    }
+  }
+  </script>
+
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/OrbitControls';
+
+  // 🎬 Renderizador
+  var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'),
+    antialias: true
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0xfff8e1);
+
+  // 🎥 Escena y cámara
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 3, 6);
+  camera.lookAt(0, 1, 0);
+
+  // 🎮 Controles
+  var controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+
+  //Luces
+  var luz = new THREE.PointLight(0xffffff, 1);
+  luz.position.set(10, 10, 10);
+  scene.add(luz);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+  
+  // ☕ Función de la taza
+  function Taza ({x, y, z}) {
+    var grupo = new THREE.Group();
+
+  
+    // Cuerpo de la taza
+    var matTaza = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    var geoTaza = new THREE.CylinderGeometry(1, 1, 2, 32, 1, true);
+    var meshTaza = new THREE.Mesh(geoTaza, matTaza);
+    meshTaza.position.y = 1;
+    grupo.add(meshTaza);
+
+    // Fondo de la taza
+    var geoFondo = new THREE.CircleGeometry(1, 32);
+    var meshFondo = new THREE.Mesh(geoFondo, matTaza);
+    meshFondo.rotation.x = -1.5708;
+    meshFondo.position.y = 0;
+    grupo.add(meshFondo);
+
+    // Café
+    var matCafe = new THREE.MeshPhongMaterial({ color: 0x4b2e05 });
+    var geoCafe = new THREE.CircleGeometry(0.95, 32);
+    var meshCafe = new THREE.Mesh(geoCafe, matCafe);
+    meshCafe.rotation.x = -1.5708; 
+    meshCafe.position.y = 2.01;
+    grupo.add(meshCafe);
+
+    // Plato
+    var matPlato = new THREE.MeshPhongMaterial({ color: 0xf5f5f5 });
+
+    var geoPlato = new THREE.CylinderGeometry(1.8, 1.8, 0.1, 32);
+    var meshPlato = new THREE.Mesh(geoPlato, matPlato);
+    meshPlato.position.y = 0;
+    grupo.add(meshPlato);
+
+    // Asa
+    var geoAsa = new THREE.TorusGeometry(0.55, 0.12, 16, 32);
+    var meshAsa = new THREE.Mesh(geoAsa, matTaza);
+    meshAsa.rotation.y = 0;       
+    meshAsa.rotation.z = 1.5708;  
+    meshAsa.position.set(1.1, 1, 0);
+    grupo.add(meshAsa);
+
+    // --- AGRUPAR TODO ---
+  const TazaGroup = new THREE.Group();
+  TazaGroup.add(meshTaza, meshFondo, meshCafe, meshPlato, meshAsa);
+
+  // --- POSICIÓN GENERAL ---
+  TazaGroup.position.set(x, y, z);
+
+  return TazaGroup;
+}
+
+// AFREGAR A LA ESCENA
+const miTaza= Taza({ x: 0, y: 0, z: 0 });
+scene.add(miTaza);
+
+
+  // 🎞️ Animación
+  function animar() {
+  miTaza.rotation.y += 0.01;
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animar);
+}
+
+
+  animar();
+  </script>
+</body>
+</html>

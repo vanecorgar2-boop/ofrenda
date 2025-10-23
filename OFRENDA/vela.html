@@ -1,0 +1,151 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>VELA</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///////////
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+// BASE
+var geometry10= new THREE. BoxGeometry (30,0.4,30)
+var material10= new THREE.MeshLambertMaterial({ 
+     color:0xCEF2DE, side: THREE.DoubleSide
+});
+   var mesh10= new THREE.Mesh(geometry10,material10);
+   scene.add(mesh10);
+   mesh10.position.set (-0,-1);
+   mesh10.castShadow = true;
+    
+// 🕯️ VELA HECHA SOLO CON MESH
+function Vela({ x, y, z }) {
+
+  // --- CUERPO DE LA VELA ---
+  var g1 = new THREE.CylinderGeometry(1, 1, 6, 32);
+  var m1 = new THREE.MeshLambertMaterial({ color: 0xfff3d4 }); // cera color crema
+  var mesh1 = new THREE.Mesh(g1, m1);
+  mesh1.position.set(0, 3, 0);
+
+  // --- MECHA ---
+  var g2 = new THREE.CylinderGeometry(0.05, 0.05, 0.5, 12);
+  var m2 = new THREE.MeshLambertMaterial({ color: 0x333333 }); // color gris oscuro
+  var mesh2 = new THREE.Mesh(g2, m2);
+  mesh2.position.set(0, 6.25, 0);
+
+  // --- FLAMA ---
+  var g3 = new THREE.ConeGeometry(0.3, 0.8, 16);
+  var m3 = new THREE.MeshBasicMaterial({ color: 0xffa500 }); // color naranja (sin luz)
+  var mesh3 = new THREE.Mesh(g3, m3);
+  mesh3.position.set(0, 6.8, 0);
+
+  // --- RESPLANDOR SIMBÓLICO (ESFERA NARANJA TRANSPARENTE) ---
+  var g4 = new THREE.SphereGeometry(0.7, 16, 16);
+  var m4 = new THREE.MeshBasicMaterial({ color: 0xffa500, transparent: true, opacity: 0.3 });
+  var mesh4 = new THREE.Mesh(g4, m4);
+  mesh4.position.set(0, 6.9, 0);
+
+  // --- AGRUPAR TODO ---
+  const VelaGroup = new THREE.Group();
+  VelaGroup.add(mesh1, mesh2, mesh3, mesh4);
+
+  // --- POSICIÓN GENERAL ---
+  VelaGroup.position.set(x, y, z);
+  
+
+  return VelaGroup;
+}
+
+// AFREGAR A LA ESCENA
+const miVela= Vela({ x: 0, y: 0, z: 0 });
+scene.add(miVela);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

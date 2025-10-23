@@ -1,0 +1,146 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>mole</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+    function piernamole(x, y, z) {
+    // Muslo
+    var geoMuslo = new THREE.SphereGeometry(1, 32, 32);
+    var matMuslo = new THREE.MeshLambertMaterial({ color: 0x3e2723 }); // color pollo dorado
+    var meshMuslo = new THREE.Mesh(geoMuslo, matMuslo);
+    meshMuslo.scale.set(1, 1.3, 0.8);
+    meshMuslo.position.set(0, 1.5, 0);
+
+    // Hueso 
+    var geoHueso = new THREE.CylinderGeometry(0.2, 0.2, 1.5, 16);
+    var matHueso = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var meshHueso = new THREE.Mesh(geoHueso, matHueso);
+    meshHueso.rotation.z = Math.PI / 2;
+    meshHueso.position.set(-1.5, 1.5, 0);
+
+    var geoHuesoPunta = new THREE.SphereGeometry(0.3, 16, 16);
+    var punta1 = new THREE.Mesh(geoHuesoPunta, matHueso);
+    punta1.position.set(-2.2, 1.5, 0);
+
+    var punta2 = new THREE.Mesh(geoHuesoPunta, matHueso);
+    punta2.position.set(-0.8, 1.5, 0);
+
+    // Mole 
+    var geoMole = new THREE.SphereGeometry(1.2, 32, 32);
+    var matMole = new THREE.MeshLambertMaterial({ color: 0x3e2723 }); // color chocolate
+    var meshMole = new THREE.Mesh(geoMole, matMole);
+    meshMole.scale.set(2, 0.4, 2); 
+    meshMole.position.set(0, 0.5, 0);
+
+    
+
+    // Parte externa del plato 
+    var geoBorde = new THREE.CylinderGeometry(3, 3,0.2, 32);
+    var matPlato = new THREE.MeshLambertMaterial({ color: 0xFFFFFF}); // gris claro
+    var meshBorde = new THREE.Mesh(geoBorde, matPlato);
+    meshBorde.position.set(0, 0.15, 0);
+
+    
+    // Grupo
+    var piernaGroup = new THREE.Group();
+    piernaGroup.add(meshMuslo);
+    piernaGroup.add(meshHueso);
+    piernaGroup.add(punta1);
+    piernaGroup.add(punta2);
+    piernaGroup.add(meshMole);
+    
+ piernaGroup.add(meshBorde);
+   
+
+    piernaGroup.position.set(x, y, z);
+
+    return piernaGroup;
+}
+
+// Añadir a la escena
+var miPierna = piernamole(-3, 0, 0);
+scene.add(miPierna);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

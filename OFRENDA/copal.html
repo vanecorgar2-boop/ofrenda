@@ -1,0 +1,181 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>copal</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///////////
+
+   
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+
+
+// BASE
+var geometry10= new THREE. BoxGeometry (30,0.4,30)
+var material10= new THREE.MeshLambertMaterial({ 
+     color:0xCEF2DE, side: THREE.DoubleSide
+});
+   var mesh10= new THREE.Mesh(geometry10,material10);
+   scene.add(mesh10);
+   mesh10.position.set (-0,-1);
+   mesh10.castShadow = true;
+    
+//  COPAL CON HUMO
+function Copal({ x, y, z }) {
+
+  // --- BASE DEL COPAL ---
+  var g1 = new THREE.CylinderGeometry(0.8, 1.2, 0.3, 32);
+  var m1 = new THREE.MeshLambertMaterial({ color: 0x8B4513 }); // café oscuro
+  var mesh1 = new THREE.Mesh(g1, m1);
+  mesh1.position.set(0, 0.2, 0);
+
+  // --- CUERPO PRINCIPAL ---
+  var g2 = new THREE.CylinderGeometry(1.2, 0.8, 0.6, 32);
+  var m2 = new THREE.MeshLambertMaterial({ color: 0xA0522D }); // tono barro
+  var mesh2 = new THREE.Mesh(g2, m2);
+  mesh2.position.set(0, 0.8, 0);
+
+  // --- BORDE SUPERIOR ---
+  var g3 = new THREE.TorusGeometry(1.0, 0.05, 16, 100);
+  var m3 = new THREE.MeshLambertMaterial({ color: 0x5C3317 }); // marrón oscuro
+  var mesh3 = new THREE.Mesh(g3, m3);
+  mesh3.position.set(0, 1.1, 0);
+  mesh3.rotation.x = 1.57;
+
+  // --- CARBÓN / RESINA ENCENDIDA ---
+  var g4 = new THREE.CylinderGeometry(0.6, 0.6, 0.1, 32);
+  var m4 = new THREE.MeshLambertMaterial({ color: 0x2F2F2F }); // negro carbón
+  var mesh4 = new THREE.Mesh(g4, m4);
+  mesh4.position.set(0, 1.15, 0);
+
+  // --- BRILLO DEL FUEGO (RESINA ENCENDIDA) ---
+  var g5 = new THREE.SphereGeometry(0.25, 16, 16);
+  var m5 = new THREE.MeshLambertMaterial({ color: 0xFF4500, emissive: 0xFF8C00 }); // rojo-naranja encendido
+  var mesh5 = new THREE.Mesh(g5, m5);
+  mesh5.position.set(0, 1.25, 0);
+
+  // --- HUMO (3 PARTES LIGERAS) ---
+  var g6 = new THREE.SphereGeometry(0.2, 16, 16);
+  var m6 = new THREE.MeshLambertMaterial({ color: 0xD3D3D3, transparent: true, opacity: 0.6 });
+  var mesh6 = new THREE.Mesh(g6, m6);
+  mesh6.position.set(0, 1.6, 0);
+
+  var g7 = new THREE.SphereGeometry(0.25, 16, 16);
+  var m7 = new THREE.MeshLambertMaterial({ color: 0xDCDCDC, transparent: true, opacity: 0.5 });
+  var mesh7 = new THREE.Mesh(g7, m7);
+  mesh7.position.set(0, 1.9, 0.1);
+
+  var g8 = new THREE.SphereGeometry(0.3, 16, 16);
+  var m8 = new THREE.MeshLambertMaterial({ color: 0xE8E8E8, transparent: true, opacity: 0.4 });
+  var mesh8 = new THREE.Mesh(g8, m8);
+  mesh8.position.set(0, 2.2, -0.1);
+
+  // --- GRUPO GENERAL ---
+  const CopalGroup = new THREE.Group();
+  CopalGroup.add(mesh1, mesh2, mesh3, mesh4, mesh5, mesh6, mesh7, mesh8);
+
+  // --- POSICIÓN ---
+  CopalGroup.position.set(x, y, z);
+
+  return CopalGroup;
+}
+
+// --- AGREGAR A LA ESCENA ---
+const miCopal = Copal({ x: 1, y: 0, z: -5 });
+scene.add(miCopal);
+
+
+
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

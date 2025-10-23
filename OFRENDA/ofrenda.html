@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OFRENDA PRINCIPAL</title>
+</head>
+<body>
+
+<canvas id="myCanvas"></canvas>
+
+<!--El elemento HTML canvas se puede utilizar para dibujar graficas y secuencias de comandos(por lo general JavaScript) .--> </canvas>
+    <script src="./font/03.js"></script>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "./js/three.module.js",
+        "three/OrbitControls": "./js/OrbitControls.js"
+    }
+}
+</script>
+
+<script type="module">
+// 🗃️ Importar librerías
+import * as THREE from 'three';
+import { OrbitControls } from 'three/OrbitControls';
+import { RoundedBoxGeometry } from "./js/RoundedBoxGeometry.js";
+import { TextGeometry } from "./js/TextGeometry.js";
+import { FontLoader } from "./js/FontLoader.js";
+import Cuadro from "./objetos/Cuadro.js";
+import Cuadro2 from "./objetos/Cuadro2.js";
+import Jarra from "./objetos/jarra.js";
+import Vela from "./objetos/vela.js";
+import PanDeMuerto from "./objetos/pan.js";
+import vaso from "./objetos/vaso de agua.js";
+import atole from "./objetos/atole.js";
+import coca from"./objetos/coca.js";
+import Mezcal from"./objetos/botella de mezcal.js";
+import flor from"./objetos/flor.js";
+import Copal from"./objetos/Copal.js";
+import Taza from"./objetos/cafe.js";
+import cruz from"./objetos/cruz.js";
+import Catrina from"./objetos/catrina.js";
+import Arco from"./objetos/arcoDeFlores.js";
+import pozole from"./objetos/pozole.js";
+import piernamole from"./objetos/mole.js";
+import fruta from"./objetos/fruta.js";
+import molcajete from"./objetos/guacamole.js";
+import Calaverita from"./objetos/calaveritaAzucar.js";
+
+
+// 🕹️ Renderer
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'),
+    antialias: true
+});
+renderer.setPixelRatio(window.devicePixelRatio); 
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0xC7C69B);
+
+// 🎬 Escena
+const scene = new THREE.Scene();
+
+
+// 🎥 Cámara
+const camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 2000);
+camera.position.set(0, 100, 290); 
+camera.lookAt(0, 50, 0);  
+
+//  Redimensionar canvas
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+//  Controles de cámara
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+
+//  Luz ambiental
+//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+//scene.add(ambientLight);
+
+// Luz direccional
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+dirLight.position.set(0, 50, -10);
+scene.add(dirLight);
+
+
+//  Fondo
+const loader = new THREE.TextureLoader();
+scene.background = loader.load('./assets/fondo.jpg');
+
+//  Base de la ofrenda
+const geometryBase = new THREE.BoxGeometry(500, 0.4, 500);
+const materialBase = new THREE.MeshLambertMaterial({ map: loader.load('./assets/fondo4.jpg') });
+const meshBase = new THREE.Mesh(geometryBase, materialBase);
+meshBase.position.set(0, 0, 0);
+meshBase.castShadow = true;
+scene.add(meshBase);
+
+
+
+// Carga las texturas y configura repetición
+const texturaPiso1 = loader.load('./assets/mantel2.jpg');
+texturaPiso1.wrapS = THREE.RepeatWrapping;
+texturaPiso1.wrapT = THREE.RepeatWrapping;
+texturaPiso1.repeat.set(4, 4);
+
+const texturaPiso2 = loader.load('./assets/mantel2.jpg');
+texturaPiso2.wrapS = THREE.RepeatWrapping;
+texturaPiso2.wrapT = THREE.RepeatWrapping;
+texturaPiso2.repeat.set(3, 3);
+
+const texturaPiso3 = loader.load('./assets/mantel2.jpg');
+texturaPiso3.wrapS = THREE.RepeatWrapping;
+texturaPiso3.wrapT = THREE.RepeatWrapping;
+texturaPiso3.repeat.set(2, 2);
+
+// Crea los pisos con las texturas
+const piso1 = new THREE.Mesh(
+  new THREE.CylinderGeometry(10, 10, 2, 32),
+  new THREE.MeshLambertMaterial({ map: texturaPiso1 })
+);
+piso1.position.set(0, 0, -5);
+
+const piso2 = new THREE.Mesh(
+  new THREE.CylinderGeometry(7, 7, 2, 32),
+  new THREE.MeshLambertMaterial({ map: texturaPiso2 })
+);
+piso2.position.set(0, 2, -5);
+
+const piso3 = new THREE.Mesh(
+  new THREE.CylinderGeometry(4, 4, 2, 32),
+  new THREE.MeshLambertMaterial({ map: texturaPiso3 })
+);
+piso3.position.set(0, 4, -5);
+
+// Agrupa y añade a la escena
+const baseOfrenda = new THREE.Group();
+baseOfrenda.add(piso1, piso2, piso3);
+scene.add(baseOfrenda);
+baseOfrenda.scale.set(14, 14, 14);
+baseOfrenda.position.set(0, 13, -25);
+
+//CATRINA
+const miCatrina = Catrina ({ x: 0, y: 140, z: -95 });
+scene.add(miCatrina);
+miCatrina.scale.set(10, 10, 10);
+
+// Cuadro
+var miCuadro = Cuadro({ x: 20, y: 84, z: -55 });
+scene.add(miCuadro);
+miCuadro.scale.set(6, 6, 6);
+miCuadro.rotation.y = -0.3; 
+
+// Cuadro2
+var miCuadro2 = Cuadro2 ({ x: -20, y:84, z: -55 }); 
+scene.add(miCuadro2);
+miCuadro2.scale.set(6, 6, 6);
+miCuadro2.rotation.y = 0.3;
+
+// Jarra
+var miJarra = Jarra({ x: -8.5, y: 28, z: 19 });
+scene.add(miJarra);
+miJarra.scale.set(3, 3, 3);
+
+// Jarra
+var miJarra = Jarra({ x: -110, y: 28, z: -150 });
+scene.add(miJarra);
+miJarra.scale.set(3, 3, 3);
+
+// Jarra
+var miJarra = Jarra({ x: 110, y: 28, z: -150 });
+scene.add(miJarra);
+miJarra.scale.set(3, 3, 3);
+
+// Vela
+var miVela = Vela({ x: 0, y: 84, z: -44 });
+scene.add(miVela);
+miVela.scale.set(2, 2, 2);
+var luz = new THREE.PointLight(0xffa500, 0.5, 8);
+luz.position.set(-8.5, 1, 5);
+scene.add(luz);
+
+// Vela
+var miVela = Vela({ x: 8, y: 84, z: -50 });
+scene.add(miVela);
+miVela.scale.set(2, 2, 2);
+var luz = new THREE.PointLight(0xffa500, 0.5, 8);
+luz.position.set(-8.5, 1, 5);
+scene.add(luz);
+
+// Vela
+var miVela = Vela({ x: -8, y: 84, z: -50 });
+scene.add(miVela);
+miVela.scale.set(2, 2, 2);
+var luz = new THREE.PointLight(0xffa500, 0.5, 8);
+luz.position.set(-8.5, 1, 5);
+scene.add(luz);
+
+//Pan
+var miPanDeMuerto = PanDeMuerto({ x: -115, y: 33, z: -95 });
+scene.add(miPanDeMuerto);
+miPanDeMuerto.scale.set(2.5, 2.5, 2.5);
+
+//Pan
+var miPanDeMuerto = PanDeMuerto({ x: -35, y: 60, z: -165 });
+scene.add(miPanDeMuerto);
+miPanDeMuerto.scale.set(2.5, 2.5, 2.5);
+
+//Pan
+var miPanDeMuerto = PanDeMuerto({ x: 120, y: 33, z: -100 });
+scene.add(miPanDeMuerto);
+miPanDeMuerto.scale.set(2.5, 2.5, 2.5);
+
+//Pan
+var miPanDeMuerto = PanDeMuerto({ x: -20, y: 60, z: -15 });
+scene.add(miPanDeMuerto);
+miPanDeMuerto.scale.set(2.5, 2.5, 2.5);
+
+//Vaso
+var mivaso = vaso({ x: 105, y: 29, z: -33 });
+scene.add(mivaso);
+mivaso.scale.set(5, 5, 5);
+
+//Vaso
+var mivaso = vaso({ x: -120, y: 29, z: -60 });
+scene.add(mivaso);
+mivaso.scale.set(5, 5, 5);
+
+//Vaso
+var mivaso = vaso({ x: 70, y: 55, z: -130 });
+scene.add(mivaso);
+mivaso.scale.set(5, 5, 5);
+
+//atole
+var miatole = atole({ x: 120, y: 28, z: -70 });
+scene.add(miatole);
+miatole.scale.set(4.5, 4.5, 4.5);
+
+//atole
+var miatole = atole({ x: -50, y: 56, z: -25 });
+scene.add(miatole);
+miatole.scale.set(4.5, 4.5, 4.5);
+
+//cocacola
+var mibotella = coca({ x: -100, y: 37, z: -30 });
+scene.add(mibotella);
+mibotella.scale.set(3, 3, 3);
+
+//cocacola
+var mibotella = coca({ x: 85, y: 65, z: -100 });
+scene.add(mibotella);
+mibotella.scale.set(3, 3, 3);
+
+//cocacola
+var mibotella = coca({ x: -85, y: 65, z: -108 });
+scene.add(mibotella);
+mibotella.scale.set(3, 3, 3);
+
+//Cafe
+var miTaza = Taza({ x: 10, y: 27, z: -215 });
+scene.add(miTaza);
+miTaza.scale.set(5, 5, 5);
+
+//Cafe
+var miTaza = Taza({ x: 15, y: 56, z: -10 });
+scene.add(miTaza);
+miTaza.scale.set(5, 5, 5);
+
+//Cruz
+    var micruz = cruz({ x: 0, y: 75, z: -25 });
+    scene.add(micruz);
+    micruz.scale.set(5, 5, 5);
+
+//fruta
+var mifruta = fruta ({ x: -35, y: 27, z: 20 });
+scene.add(mifruta);
+mifruta.scale.set(4, 4, 4);
+
+//fruta
+var mifruta = fruta ({ x: -35, y: 27, z: -220});
+scene.add(mifruta);
+mifruta.scale.set(4, 4, 4);
+
+//Mezcal
+var miMezcal = Mezcal({ x: 85, y: 27, z: -3 });
+scene.add(miMezcal);
+miMezcal.scale.set(5, 5, 5);
+
+//Mezcal
+var miMezcal = Mezcal({ x: 28, y: 55, z: -165 });
+scene.add(miMezcal);
+miMezcal.scale.set(5, 5, 5);
+
+//Mezcal
+var miMezcal = Mezcal({ x: -45, y: 55, z: -75 });
+scene.add(miMezcal);
+miMezcal.scale.set(5, 5, 5);
+
+//ARCO
+var miArco = Arco({ x: 0, y: -1, z: -10, scene: scene });
+scene.add(miArco);
+miArco.scale.set(13, 13, 13);
+
+//POZOLE
+var miPozole = pozole({ x: -75, y: 30, z: -1});
+scene.add(miPozole);
+miPozole.scale.set(3, 3, 3);
+
+//POZOLE
+var miPozole = pozole({ x: 75, y: 58, z: -75});
+scene.add(miPozole);
+miPozole.scale.set(3, 3, 3);
+
+//POZOLE
+var miPozole = pozole({x: -75, y: 30, z: -200});
+scene.add(miPozole);
+miPozole.scale.set(3, 3, 3);
+
+//Mole
+var miPierna = piernamole ({ x: 55, y: 30, z: 14});
+scene.add(miPierna);
+miPierna.scale.set(4, 4, 4);
+
+//Mole
+var miPierna = piernamole ({ x: 0, y: 55, z: -175});
+scene.add(miPierna);
+miPierna.scale.set(4, 4, 4);
+
+//Guacamole
+var miMolcajete = molcajete ({ x: -75, y: 62, z: -80});
+scene.add(miMolcajete);
+miMolcajete.scale.set(4, 4, 4);
+
+//Guacamole
+var miMolcajete = molcajete ({ x: 55, y: 62, z: -158});
+scene.add(miMolcajete);
+miMolcajete.scale.set(4, 4, 4);
+
+//Copal
+var miCopal = Copal({ x: -65, y: 55, z: -145 });
+scene.add(miCopal);
+miCopal.scale.set(7, 7, 7);
+
+//Copal
+var miCopal = Copal({ x: 65, y: 55, z: -45 });
+scene.add(miCopal);
+miCopal.scale.set(7, 7, 7);
+
+//Calaverita
+var miCalaverita = Calaverita ({ x: 20, y: 29, z: 25 });
+scene.add(miCalaverita);
+miCalaverita.scale.set(3, 3, 3);
+
+//Calaverita
+var miCalaverita = Calaverita ({ x: 45, y: 56, z: -25 });
+scene.add(miCalaverita);
+miCalaverita.scale.set(3, 3, 3);
+
+//Calaverita
+var miCalaverita = Calaverita ({ x: -65, y: 56, z: -45 });
+scene.add(miCalaverita);
+miCalaverita.scale.set(3, 3, 3);
+miCalaverita.rotation.y = -0.5;
+
+//Calaverita
+var miCalaverita = Calaverita ({ x: 65, y: 28, z: -195 });
+scene.add(miCalaverita);
+miCalaverita.scale.set(3, 3, 3);
+miCalaverita.rotation.y = 15;
+
+// --- TAPETE ENTRE CAMINO DE VELAS ---
+var geometriaTapete = new THREE.BoxGeometry(300, 0.5, 300); 
+var materialTapete = new THREE.MeshLambertMaterial({map: loader.load('./assets/tapete6.jpg') }); 
+var meshTapete = new THREE.Mesh(geometriaTapete, materialTapete);
+meshTapete.position.set(0, 1, 100);
+meshTapete.castShadow = true;
+scene.add(meshTapete);
+
+//FLOR
+var miflor = flor ({ x: -150, y: 35, z: 70 });
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: 150, y: 35, z: 70 });
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: -150, y: 35, z: 115 });
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: 150, y: 35, z: 115 });
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: -150, y: 35, z: 160});
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: 150, y: 35, z: 160});
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: -150, y: 35, z: 205});
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+//FLOR
+var miflor = flor ({ x: 150, y: 35, z: 205});
+scene.add(miflor);
+miflor.scale.set(15, 15, 15);
+
+
+
+// Vela IZQ 1
+var miVela = Vela({ x: -170, y: 0, z: 90 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz1 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz1.position.set(-8.5, 1, 5);
+scene.add(luz1);
+
+// Vela DER 1
+var miVela = Vela({ x: 170, y: 0, z: 90 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz2 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz2.position.set(8.5, 2, 5);
+scene.add(luz2);
+
+// Vela DER 2
+var miVela = Vela({ x: 170, y: 0, z: 135 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz3 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz3.position.set(8.5, 1, 9.5);
+scene.add(luz3);
+
+// Vela IZQ 2
+var miVela = Vela({ x: -170, y: 0, z: 135 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz4 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz4.position.set(-8.5, 1, 9.5);
+scene.add(luz4);
+
+// Vela DER 3
+var miVela = Vela({ x: 170, y: 0, z: 180 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz5 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz5.position.set(8.5, 1, 13.2);
+scene.add(luz5);
+
+// Vela IZQ 3
+var miVela = Vela({ x: -170, y: 0, z: 180 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz6 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz6.position.set(-8.5, 1, 13.2);
+scene.add(luz6);
+
+// Vela DER 4
+var miVela = Vela({ x: 170, y: 0, z: 225 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz7 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz7.position.set(8.5, 1, 16.5);
+scene.add(luz7);
+
+// Vela IZQ 4
+var miVela = Vela({ x: -170, y: 0, z: 225 });
+scene.add(miVela);
+miVela.scale.set(7, 7, 7);
+var luz8 = new THREE.PointLight(0xffa500, 0.5, 8);
+luz8.position.set(-8.5, 1, 16.5);
+scene.add(luz8);
+
+/////TEXTO
+ 
+// ARRIBA DEL ARCO
+var loaderFont = new FontLoader();
+var font = loaderFont.parse(fontJSON3); 
+
+// Crear geometría del texto
+var geometryTexto = new TextGeometry('CDMX', {
+    font: font,
+    size: 50,    
+    height: 10,   
+    curveSegments: 12
+});
+geometryTexto.center();
+
+// Material del texto
+var materialTexto = new THREE.MeshLambertMaterial({
+       color: 0xFF6F00,    
+    emissive: 0xFF8C00, 
+});
+
+// Mesh del texto
+var textoMesh = new THREE.Mesh(geometryTexto, materialTexto);
+textoMesh.castShadow = true;
+
+//POSICIÓN 
+textoMesh.position.set(0, 380, 5); 
+scene.add(textoMesh);
+
+// 🎰 Rendering y animación
+function render() {
+    controls.update();
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+}
+render();
+</script>
+
+</body>
+</html>

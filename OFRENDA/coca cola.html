@@ -1,0 +1,125 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>COCACOLA LITE</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+    function botella({ x, y, z }) {
+        // coca
+        var geoCuerpo = new THREE.CylinderGeometry(1.2, 1.2, 7, 32);
+        var materialCuerpo = new THREE.MeshLambertMaterial
+        ({ color: 0xffffff });
+        var meshCuerpo = new THREE.Mesh(geoCuerpo, materialCuerpo);
+        meshCuerpo.position.set(0, 0, 0);
+        
+        var geoCuello = new THREE.CylinderGeometry(0.5, 0.7, 2, 32);
+        var meshCuello = new THREE.Mesh(geoCuello, materialCuerpo);
+        meshCuello.position.set(0, 4.5, 0);
+    
+        var materialTapa = new THREE.MeshLambertMaterial({ color: 0x8b0000 });
+        var geoTapa = new THREE.CylinderGeometry(0.55, 0.55, 0.3, 32);
+        var meshTapa = new THREE.Mesh(geoTapa, materialTapa);
+        meshTapa.position.set(0, 5.7, 0);
+
+        var geoEtiqueta = new THREE.CylinderGeometry(1.22, 1.22, 1.5, 32);
+        var materialEtiqueta = new THREE.MeshLambertMaterial({ color: 0xd32f2f }); 
+        var meshEtiqueta = new THREE.Mesh(geoEtiqueta, materialEtiqueta);
+        meshEtiqueta.position.set(0, 0, 0);
+        // Grupo
+        var botellaGroup = new THREE.Group();
+        botellaGroup.add(meshCuerpo);
+        botellaGroup.add(meshCuello);
+        botellaGroup.add(meshTapa);
+        botellaGroup.add(meshEtiqueta);
+
+        botellaGroup.position.set(x, y, z);
+
+        return botellaGroup;
+    }
+
+    var mibotella = botella({ x: 3, y: 0, z: 0 });
+    scene.add(mibotella);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

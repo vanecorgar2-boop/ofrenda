@@ -1,0 +1,137 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Fruta</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,30,60);
+   scene.add(light1);
+  //fruta
+  
+  // --- Materiales ---
+  function fruta({ x, y, z }) {
+
+  const materialFruta = new THREE.MeshStandardMaterial({ color: 0xff7f27 }); 
+  const materialTallo = new THREE.MeshStandardMaterial({ color: 0x3b2f2f }); 
+  const materialHoja = new THREE.MeshStandardMaterial({ color: 0x3cb371 }); 
+
+ 
+  // Cuerpo principal
+  const cuerpo = new THREE.Mesh(
+    new THREE.SphereGeometry(1.5, 32, 32),
+    materialFruta
+  );
+  cuerpo.position.set(0, 1.5, 0);
+
+  // Tallo
+  const tallo = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.1, 0.1, 0.5, 16),
+    materialTallo
+  );
+  tallo.position.set(0, 3, 0);
+
+  // Hoja
+  const hoja = new THREE.Mesh(
+    new THREE.SphereGeometry(0.4, 16, 16, 0, 3.14159),
+    materialHoja
+  );
+  hoja.rotation.z = 3.14159 / 2;
+  hoja.position.set(0.5, 3.2, 0);
+
+  // Agrupar
+  var frutaGroup = new THREE.Group();
+  frutaGroup.add(cuerpo);
+  frutaGroup.add(tallo);
+  frutaGroup.add(hoja);
+
+  frutaGroup.position.set(x, y, z);
+
+  return frutaGroup;
+
+  }
+
+// Importar escena
+var mifruta = fruta ({ x: 1, y: 5, z: 2 });
+scene.add(mifruta);
+
+        
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>
